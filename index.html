@@ -1483,17 +1483,35 @@ ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(
     <div style="font-size:13px;font-weight:700;color:#7C4DFF;margin-bottom:12px">
       ⚙️ Settings
     </div>
-    
-    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px">
+
+    <!-- Groq Key -->
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">
+      🤖 Groq API Key (AI Chat)
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px">
+      console.groq.com → API Keys → Create
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="groq-key-input" type="password" 
+        placeholder="gsk_xxxxxxxxxx"
+        style="flex:1;background:rgba(255,255,255,.08);border:1.5px solid #7C4DFF33;
+        border-radius:10px;padding:10px 12px;color:#fff;font-size:12px;
+        outline:none;font-family:inherit"/>
+      <button onclick="var i=document.getElementById('groq-key-input');i.type=i.type==='password'?'text':'password'"
+        style="width:40px;border-radius:10px;background:rgba(255,255,255,.08);
+        border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:16px">👁️</button>
+    </div>
+
+    <!-- ElevenLabs Key -->
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">
       🎙️ ElevenLabs Voice Key
     </div>
-    <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:8px;line-height:1.6">
+    <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px">
       elevenlabs.io → Developers → Create API Key
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:8px">
+    <div style="display:flex;gap:8px;margin-bottom:12px">
       <input id="el-key-input" type="password" 
         placeholder="sk_xxxxxxxxxx"
-        value=""
         style="flex:1;background:rgba(255,255,255,.08);border:1.5px solid #7C4DFF33;
         border-radius:10px;padding:10px 12px;color:#fff;font-size:12px;
         outline:none;font-family:inherit"/>
@@ -1501,12 +1519,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(
         style="width:40px;border-radius:10px;background:rgba(255,255,255,.08);
         border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:16px">👁️</button>
     </div>
+
     <div style="display:flex;gap:8px">
-      <button onclick="saveElKey()"
+      <button onclick="saveAllKeys()"
         style="flex:1;background:linear-gradient(135deg,#7C4DFF,#e879f9);
         border:none;border-radius:10px;padding:10px;color:#fff;
         font-weight:700;font-size:13px;cursor:pointer">
-        Save Key 💜
+        Save Keys 💜
       </button>
       <button onclick="testVoice()"
         style="flex:1;background:rgba(124,77,255,.15);border:1px solid #7C4DFF44;
@@ -1809,9 +1828,24 @@ function setStatus(text, color) {
 function toggleSettings() {
   const s = document.getElementById('moto-settings');
   s.style.display = s.style.display === 'none' ? 'block' : 'none';
-  // Load saved key
-  const saved = localStorage.getItem('moto_el_key') || '';
-  if (saved) document.getElementById('el-key-input').value = saved;
+  // Load saved keys
+  const elSaved = localStorage.getItem('moto_el_key') || '';
+  if (elSaved) document.getElementById('el-key-input').value = elSaved;
+  const groqSaved = localStorage.getItem('moto_key') || '';
+  if (groqSaved) document.getElementById('groq-key-input').value = groqSaved;
+}
+
+function saveAllKeys() {
+  const groqKey = document.getElementById('groq-key-input').value.trim();
+  const elKey   = document.getElementById('el-key-input').value.trim();
+  const msg     = document.getElementById('settings-msg');
+  
+  if (groqKey) localStorage.setItem('moto_key', groqKey);
+  if (elKey)   localStorage.setItem('moto_el_key', elKey);
+  
+  msg.style.color = '#66BB6A';
+  msg.textContent = '✅ Keys save ho gayi!';
+  setTimeout(() => { msg.textContent = ''; }, 2000);
 }
 
 function toggleElShow() {
