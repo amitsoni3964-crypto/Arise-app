@@ -1,0 +1,25 @@
+{
+  "name": "ARISE — Hunter Fitness + MOTO",
+  "short_name": "ARISE",
+  "description": "Solo Leveling Fitness App with AI Girlfriend Moto",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04050C",
+  "theme_color": "#7C4DFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png", 
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["health", "fitness"],
+  "lang": "hi"
+}
