@@ -1772,11 +1772,10 @@ function browserTTS(text) {
 }
 
 async function speakMoto(text) {
-  unlockAudio();
   const el_key = localStorage.getItem('moto_el_key') || '';
   if (!el_key) return;
 
-  const voice_id = 'amiAXapsDOAiHJqbsAZj';
+  const voice_id = '21m00Tcm4TlvDq8ikWAM'; // Rachel - free voice
 
   try {
     const res = await fetch('/.netlify/functions/tts', {
@@ -1788,16 +1787,27 @@ async function speakMoto(text) {
     if (res.ok) {
       const data = await res.json();
       if (data.audio) {
-        const bytes = Uint8Array.from(atob(data.audio), c => c.charCodeAt(0));
+        // Decode base64 to audio
+        const binary = atob(data.audio);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
         const blob = new Blob([bytes], {type:'audio/mpeg'});
         const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.volume = 1;
-        await audio.play();
-        audio.onended = () => URL.revokeObjectURL(url);
+        
+        // Use AudioContext for reliable playback
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const arrayBuf = await blob.arrayBuffer();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuf);
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+        source.onended = () => URL.revokeObjectURL(url);
       }
     } else {
-      console.log('TTS failed:', await res.text());
+      console.log('TTS failed:', res.status, await res.text());
     }
   } catch(e) {
     console.log('EL error:', e);
